@@ -80,9 +80,12 @@ export async function middleware(request: NextRequest) {
   }
 
   if (user && AUTH_ROUTES.has(pathname)) {
-    const role = normalizeRole(
-      typeof user.user_metadata?.role === "string" ? user.user_metadata.role : undefined
-    ) ?? "CHILD";
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle();
+    const role = normalizeRole(profile?.role) ?? "CHILD";
 
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = roleToRoute(role);
@@ -90,9 +93,12 @@ export async function middleware(request: NextRequest) {
   }
 
   if (user && isProtectedPath(pathname)) {
-    const preferredRole = normalizeRole(
-      typeof user.user_metadata?.role === "string" ? user.user_metadata.role : undefined
-    ) ?? "CHILD";
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle();
+    const preferredRole = normalizeRole(profile?.role) ?? "CHILD";
 
     const requiredRole = Object.entries(APP_ROLES).find(([route]) =>
       pathname === route || pathname.startsWith(`${route}/`)

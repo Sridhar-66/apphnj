@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getDemoSessionCookie, normalizeRole, roleToRoute, type AppRole } from "@/lib/auth";
+import { getDemoSessionCookie, getSessionUser, normalizeRole, roleToRoute, type AppRole } from "@/lib/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export type AuthActionResult = {
@@ -56,8 +56,9 @@ export async function loginAction(
       return { error: error.message };
     }
 
+    const session = await getSessionUser();
     revalidatePath("/", "layout");
-    redirect(roleToRoute(role));
+    redirect(roleToRoute(session?.role ?? "CHILD"));
   }
 
   await setDemoSession(email, email.split("@")[0], role);
@@ -93,8 +94,7 @@ export async function registerAction(
       password,
       options: {
         data: {
-          full_name: fullName,
-          role
+          full_name: fullName
         }
       }
     });
@@ -104,7 +104,7 @@ export async function registerAction(
     }
 
     revalidatePath("/", "layout");
-    redirect(roleToRoute(role));
+    redirect("/student");
   }
 
   await setDemoSession(email, fullName, role);

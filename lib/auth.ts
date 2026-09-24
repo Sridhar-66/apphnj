@@ -85,16 +85,20 @@ export async function getSessionUser(): Promise<SessionUser | null> {
     return null;
   }
 
-  const role = normalizeRole(
-    typeof data.user.user_metadata?.role === "string" ? data.user.user_metadata.role : undefined
-  );
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name, role")
+    .eq("id", data.user.id)
+    .maybeSingle();
+
+  const role = normalizeRole(profile?.role);
 
   return {
     id: data.user.id,
     email: data.user.email ?? "",
     full_name:
-      typeof data.user.user_metadata?.full_name === "string"
-        ? data.user.user_metadata.full_name
+      typeof profile?.full_name === "string"
+        ? profile.full_name
         : data.user.email ?? "User",
     role: role ?? "CHILD"
   };
