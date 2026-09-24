@@ -16,6 +16,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Authentication: demo sessions and missing-environment fallbacks were removed. Public registration creates only `CHILD` profiles through Supabase Auth; admins create managed users from `/admin/users` through a server-only service-role action.
 - Security: route protection is enforced in middleware and server-side route guards. Public forms cannot assign roles, profile inserts are trigger-only, and profile role/email changes are blocked by RLS.
 - Backend: Supabase project `eitxjwlwmrgylboamyml` is linked; migrations 001, 002, and 003 are applied remotely and pass linked schema lint. Dashboards query live `profiles` data and show empty states where domain tables do not exist.
+- Deployment: the repository is connected to Vercel and is live in production. Production must define `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_APP_URL`, and the server-only `SUPABASE_SERVICE_ROLE_KEY` for admin user creation.
 - Password recovery: reset-link completion is implemented at `/reset-password`.
 - Required next step: Stage 2 course content system with course, module, lesson, materials, and YouTube recording support.
 

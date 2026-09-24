@@ -10,6 +10,7 @@
 - Removed all demo authentication and fabricated dashboard records. Dashboard values now come from Supabase `profiles` or explicit empty states.
 - Added admin-only UI user creation backed by the server-only Supabase service-role client. Public registration is restricted to CHILD.
 - Applied migrations 001, 002, and 003 to `eitxjwlwmrgylboamyml`; migration 003 protects profile roles/emails, removes client profile insertion, backfills missing profiles, and passes linked schema lint.
+- Deployment: the repository is connected to Vercel and live in production. Vercel environment variables must include `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_APP_URL`, and server-only `SUPABASE_SERVICE_ROLE_KEY`.
 - Verified with `npm run typecheck`, `npm run lint`, `npm run build`, linked Supabase migration status, and a source scan for removed demo data.
 
 ### Stage 2 — Course content system (next)
