@@ -1,12 +1,14 @@
 "use client";
 
-import { useActionState, useRef } from "react";
+import { useActionState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { createLessonAction, type LessonActionResult } from "@/app/actions/lessons";
 
 const formClasses =
   "w-full rounded-xl border border-slate-700 bg-slate-900/70 px-4 py-3 text-sm text-slate-50 placeholder:text-slate-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/40";
 
 export function AddLessonForm({ courseId }: { courseId: string }) {
+  const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
   const [state, formAction, isPending] = useActionState(async (prev: LessonActionResult | undefined, formData: FormData) => {
     const res = await createLessonAction(prev, formData);
@@ -15,6 +17,12 @@ export function AddLessonForm({ courseId }: { courseId: string }) {
     }
     return res;
   }, {} as LessonActionResult);
+
+  useEffect(() => {
+    if (state?.success) {
+      router.refresh();
+    }
+  }, [state?.success, router]);
 
   return (
     <form ref={formRef} action={formAction} className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5 space-y-4">

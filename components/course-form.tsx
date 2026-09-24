@@ -1,11 +1,13 @@
 "use client";
 
-import { useActionState, useRef } from "react";
+import { useActionState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { createCourseAction, type CourseActionResult } from "@/app/actions/courses";
 
 const initialState: CourseActionResult = {};
 
 export function CourseForm() {
+  const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
   const [state, formAction, isPending] = useActionState(async (prev: CourseActionResult | undefined, formData: FormData) => {
     const res = await createCourseAction(prev, formData);
@@ -14,6 +16,13 @@ export function CourseForm() {
     }
     return res;
   }, initialState);
+
+  // Refresh the server component data so the new course appears in the list
+  useEffect(() => {
+    if (state?.success) {
+      router.refresh();
+    }
+  }, [state?.success, router]);
 
   return (
     <form ref={formRef} action={formAction} className="rounded-2xl border border-slate-800 bg-slate-950/70 p-5">

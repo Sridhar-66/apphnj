@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useRef } from "react";
+import { useActionState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { createMaterialAction, type MaterialActionResult } from "@/app/actions/materials";
 
 const formClasses =
@@ -13,6 +14,7 @@ export function AddMaterialForm({
   lessonId: string;
   courseId: string;
 }) {
+  const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
   const [state, formAction, isPending] = useActionState(async (prev: MaterialActionResult | undefined, formData: FormData) => {
     const res = await createMaterialAction(prev, formData);
@@ -21,6 +23,12 @@ export function AddMaterialForm({
     }
     return res;
   }, {} as MaterialActionResult);
+
+  useEffect(() => {
+    if (state?.success) {
+      router.refresh();
+    }
+  }, [state?.success, router]);
 
   return (
     <form ref={formRef} action={formAction} className="rounded-xl border border-slate-800 bg-slate-950/60 p-4 space-y-3">
