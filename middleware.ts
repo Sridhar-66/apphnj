@@ -19,36 +19,14 @@ function isProtectedPath(pathname: string) {
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
   const pathname = request.nextUrl.pathname;
-  const demoCookie = request.cookies.get("hjb-demo-session")?.value;
-
-  if (demoCookie) {
-    try {
-      const session = JSON.parse(demoCookie) as { role?: string };
-
-      if (isProtectedPath(pathname) && pathname !== "/") {
-        const requiredRole = Object.entries(APP_ROLES).find(([route]) =>
-          pathname === route || pathname.startsWith(`${route}/`)
-        )?.[1];
-
-        if (requiredRole && normalizeRole(session.role) !== requiredRole) {
-          const redirectUrl = request.nextUrl.clone();
-          redirectUrl.pathname = roleToRoute(normalizeRole(session.role) ?? "CHILD");
-          return NextResponse.redirect(redirectUrl);
-        }
-      }
-
-      if (AUTH_ROUTES.has(pathname)) {
-        const role = normalizeRole(session.role) ?? "CHILD";
-        const redirectUrl = request.nextUrl.clone();
-        redirectUrl.pathname = roleToRoute(role);
-        return NextResponse.redirect(redirectUrl);
-      }
-    } catch {
-      // Ignore invalid demo sessions and continue to standard auth flow.
-    }
-  }
-
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    if (isProtectedPath(pathname)) {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = "/login";
+      redirectUrl.searchParams.set("error", "configuration");
+      return NextResponse.redirect(redirectUrl);
+    }
+
     return response;
   }
 
@@ -85,7 +63,15 @@ export async function middleware(request: NextRequest) {
       .select("role")
       .eq("id", user.id)
       .maybeSingle();
-    const role = normalizeRole(profile?.role) ?? "CHILD";
+    const role = normalizeRole(profile?.role);
+
+    if (!role) {
+      await supabase.auth.signOut();
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = "/login";
+      redirectUrl.search = "error=profile";
+      return NextResponse.redirect(redirectUrl);
+    }
 
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = roleToRoute(role);
@@ -98,7 +84,15 @@ export async function middleware(request: NextRequest) {
       .select("role")
       .eq("id", user.id)
       .maybeSingle();
-    const preferredRole = normalizeRole(profile?.role) ?? "CHILD";
+    const preferredRole = normalizeRole(profile?.role);
+
+    if (!preferredRole) {
+      await supabase.auth.signOut();
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = "/login";
+      redirectUrl.search = "error=profile";
+      return NextResponse.redirect(redirectUrl);
+    }
 
     const requiredRole = Object.entries(APP_ROLES).find(([route]) =>
       pathname === route || pathname.startsWith(`${route}/`)

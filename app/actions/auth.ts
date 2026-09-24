@@ -1,9 +1,8 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getDemoSessionCookie, getSessionUser, normalizeRole, roleToRoute, type AppRole } from "@/lib/auth";
+import { getSessionUser, roleToRoute } from "@/lib/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export type AuthActionResult = {
@@ -11,25 +10,8 @@ export type AuthActionResult = {
   success?: string;
 };
 
-const demoRoleFromForm = (value: FormDataEntryValue | null): AppRole => {
-  const role = normalizeRole(typeof value === "string" ? value : null) ?? "CHILD";
-  return role;
-};
-
-async function setDemoSession(email: string, fullName: string, role: AppRole) {
-  const cookieStore = await cookies();
-  cookieStore.set(getDemoSessionCookie(), JSON.stringify({
-    id: `demo-${Date.now()}`,
-    email,
-    full_name: fullName,
-    role
-  }), {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 7
-  });
+function hasSupabaseConfig() {
+  return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 }
 
 export async function loginAction(
@@ -38,7 +20,6 @@ export async function loginAction(
 ): Promise<AuthActionResult> {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
-  const role = demoRoleFromForm(formData.get("role"));
 
   if (!email || !email.includes("@")) {
     return { error: "Please enter a valid email address." };
@@ -48,22 +29,25 @@ export async function loginAction(
     return { error: "Password must be at least 6 characters long." };
   }
 
-  if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-    const supabase = await createServerSupabaseClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-
-    if (error) {
-      return { error: error.message };
-    }
-
-    const session = await getSessionUser();
-    revalidatePath("/", "layout");
-    redirect(roleToRoute(session?.role ?? "CHILD"));
+  if (!hasSupabaseConfig()) {
+    return { error: "Authentication is not configured. Add the Supabase environment variables and try again." };
   }
 
-  await setDemoSession(email, email.split("@")[0], role);
+  const supabase = await createServerSupabaseClient();
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  const session = await getSessionUser();
+
+  if (!session) {
+    return { error: "Your account profile is unavailable. Please contact an administrator." };
+  }
+
   revalidatePath("/", "layout");
-  redirect(roleToRoute(role));
+  redirect(roleToRoute(session.role));
 }
 
 export async function registerAction(
@@ -73,7 +57,6 @@ export async function registerAction(
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const fullName = String(formData.get("full_name") ?? "").trim();
-  const role = demoRoleFromForm(formData.get("role"));
 
   if (!email || !email.includes("@")) {
     return { error: "Please enter a valid email address." };
@@ -87,29 +70,32 @@ export async function registerAction(
     return { error: "Please provide your full name." };
   }
 
-  if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-    const supabase = await createServerSupabaseClient();
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName
-        }
+  if (!hasSupabaseConfig()) {
+    return { error: "Registration is not configured. Add the Supabase environment variables and try again." };
+  }
+
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        full_name: fullName
       }
-    });
-
-    if (error) {
-      return { error: error.message };
     }
+  });
 
-    revalidatePath("/", "layout");
+  if (error) {
+    return { error: error.message };
+  }
+
+  revalidatePath("/", "layout");
+
+  if (data.session) {
     redirect("/student");
   }
 
-  await setDemoSession(email, fullName, role);
-  revalidatePath("/", "layout");
-  redirect(roleToRoute(role));
+  redirect("/login?registered=1");
 }
 
 export async function resetPasswordAction(
@@ -122,27 +108,24 @@ export async function resetPasswordAction(
     return { error: "Please enter a valid email address." };
   }
 
-  if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-    const supabase = await createServerSupabaseClient();
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/reset-password`
-    });
-
-    if (error) {
-      return { error: error.message };
-    }
-
-    return { success: "Password reset link sent." };
+  if (!hasSupabaseConfig()) {
+    return { error: "Password reset is not configured. Add the Supabase environment variables and try again." };
   }
 
-  return { success: "Password reset is ready for Supabase configuration." };
+  const supabase = await createServerSupabaseClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/reset-password`
+  });
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  return { success: "Password reset link sent." };
 }
 
 export async function logoutAction() {
-  const cookieStore = await cookies();
-  cookieStore.delete(getDemoSessionCookie());
-
-  if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+  if (hasSupabaseConfig()) {
     const supabase = await createServerSupabaseClient();
     await supabase.auth.signOut();
   }

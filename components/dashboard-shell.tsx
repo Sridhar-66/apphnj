@@ -6,27 +6,16 @@ import type { AppRole } from "@/lib/auth";
 const navigationMap: Record<AppRole, { label: string; href: string }[]> = {
   ADMIN: [
     { label: "Overview", href: "/admin" },
-    { label: "Users", href: "/admin/users" },
-    { label: "Analytics", href: "/admin/analytics" },
-    { label: "Settings", href: "/admin/settings" }
+    { label: "Users", href: "/admin/users" }
   ],
   MENTOR: [
-    { label: "Overview", href: "/mentor" },
-    { label: "Courses", href: "/mentor/courses" },
-    { label: "Students", href: "/mentor/students" },
-    { label: "Analytics", href: "/mentor/analytics" }
+    { label: "Overview", href: "/mentor" }
   ],
   CHILD: [
-    { label: "Overview", href: "/student" },
-    { label: "Courses", href: "/student/courses" },
-    { label: "Progress", href: "/student/progress" },
-    { label: "Certificates", href: "/student/certificates" }
+    { label: "Overview", href: "/student" }
   ],
   INFLUENCER: [
-    { label: "Overview", href: "/influencer" },
-    { label: "Referrals", href: "/influencer/referrals" },
-    { label: "Analytics", href: "/influencer/analytics" },
-    { label: "Profile", href: "/influencer/profile" }
+    { label: "Overview", href: "/influencer" }
   ]
 };
 

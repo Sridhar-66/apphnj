@@ -12,11 +12,11 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ### Stage 1 — Foundation + Authentication (complete)
 
-- Completed: app shell, auth flow, protected routes, role-based dashboards, and Supabase-ready config.
-- Authentication: email/password-style flow with demo fallback for local development when env vars are missing; production path uses Supabase auth + server-side checks.
-- Security: route protection is enforced in middleware and server-side route guards. No role data is trusted from the browser alone.
-- Backend: Supabase project `eitxjwlwmrgylboamyml` is linked; migrations 001 and 002 are applied remotely, and live roles are read from `profiles`.
-- Files added/updated: `app/login/page.tsx`, `app/register/page.tsx`, `app/forgot-password/page.tsx`, `app/(dashboard)/admin/page.tsx`, `app/(dashboard)/mentor/page.tsx`, `app/(dashboard)/student/page.tsx`, `app/(dashboard)/influencer/page.tsx`, `app/actions/auth.ts`, `lib/auth.ts`, `middleware.ts`, `supabase/migrations/001_profiles_and_roles.sql`.
+- Completed: app shell, Supabase email/password auth, protected routes, role-based dashboards, and server-side user creation.
+- Authentication: demo sessions and missing-environment fallbacks were removed. Public registration creates only `CHILD` profiles through Supabase Auth; admins create managed users from `/admin/users` through a server-only service-role action.
+- Security: route protection is enforced in middleware and server-side route guards. Public forms cannot assign roles, profile inserts are trigger-only, and profile role/email changes are blocked by RLS.
+- Backend: Supabase project `eitxjwlwmrgylboamyml` is linked; migrations 001, 002, and 003 are applied remotely and pass linked schema lint. Dashboards query live `profiles` data and show empty states where domain tables do not exist.
+- Password recovery: reset-link completion is implemented at `/reset-password`.
 - Required next step: Stage 2 course content system with course, module, lesson, materials, and YouTube recording support.
 
 ### Operating rules

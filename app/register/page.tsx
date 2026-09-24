@@ -7,7 +7,7 @@ export default function RegisterPage() {
         <div className="mb-8 text-center">
           <p className="text-xs uppercase tracking-[0.3em] text-cyan-300">Hirely & Jobly</p>
           <h1 className="mt-3 text-3xl font-bold text-white">Create your account</h1>
-          <p className="mt-2 text-sm text-slate-300">Join the platform with your role.</p>
+          <p className="mt-2 text-sm text-slate-300">Create a student account to begin learning.</p>
         </div>
 
         <RegisterForm />

@@ -31,18 +31,6 @@ export function LoginForm() {
         <input id="login-password" name="password" type="password" required className={formClasses} placeholder="••••••••" />
       </div>
 
-      <div>
-        <label htmlFor="login-role" className="mb-2 block text-sm font-medium text-slate-200">
-          Sign in as
-        </label>
-        <select id="login-role" name="role" defaultValue="CHILD" className={formClasses}>
-          <option value="ADMIN">Admin</option>
-          <option value="MENTOR">Mentor</option>
-          <option value="CHILD">Student</option>
-          <option value="INFLUENCER">Influencer</option>
-        </select>
-      </div>
-
       {state?.error ? <p className="text-sm text-rose-400">{state.error}</p> : null}
       {state?.success ? <p className="text-sm text-emerald-400">{state.success}</p> : null}
 
@@ -84,18 +72,6 @@ export function RegisterForm() {
           Password
         </label>
         <input id="register-password" name="password" type="password" minLength={6} required className={formClasses} placeholder="At least 6 characters" />
-      </div>
-
-      <div>
-        <label htmlFor="register-role" className="mb-2 block text-sm font-medium text-slate-200">
-          Role
-        </label>
-        <select id="register-role" name="role" defaultValue="CHILD" className={formClasses}>
-          <option value="ADMIN">Admin</option>
-          <option value="MENTOR">Mentor</option>
-          <option value="CHILD">Student</option>
-          <option value="INFLUENCER">Influencer</option>
-        </select>
       </div>
 
       {state?.error ? <p className="text-sm text-rose-400">{state.error}</p> : null}

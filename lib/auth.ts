@@ -1,4 +1,3 @@
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -10,8 +9,6 @@ export type SessionUser = {
   full_name: string;
   role: AppRole;
 };
-
-const DEMO_SESSION_COOKIE = "hjb-demo-session";
 
 export function normalizeRole(value: string | null | undefined): AppRole | null {
   if (!value) {
@@ -48,32 +45,7 @@ export function roleToRoute(role: AppRole) {
   }
 }
 
-export function getDemoSessionCookie() {
-  return DEMO_SESSION_COOKIE;
-}
-
 export async function getSessionUser(): Promise<SessionUser | null> {
-  const cookieStore = await cookies();
-  const rawSession = cookieStore.get(DEMO_SESSION_COOKIE)?.value;
-
-  if (rawSession) {
-    try {
-      const parsed = JSON.parse(rawSession) as Partial<SessionUser> & { role?: string };
-      const role = normalizeRole(parsed.role ?? "CHILD");
-
-      if (role) {
-        return {
-          id: parsed.id ?? "demo-user",
-          email: parsed.email ?? "demo@hirelyandjobly.in",
-          full_name: parsed.full_name ?? "Demo User",
-          role
-        };
-      }
-    } catch {
-      // Ignore invalid demo sessions and continue to Supabase session checks.
-    }
-  }
-
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     return null;
   }
@@ -93,6 +65,10 @@ export async function getSessionUser(): Promise<SessionUser | null> {
 
   const role = normalizeRole(profile?.role);
 
+  if (!role) {
+    return null;
+  }
+
   return {
     id: data.user.id,
     email: data.user.email ?? "",
@@ -100,7 +76,7 @@ export async function getSessionUser(): Promise<SessionUser | null> {
       typeof profile?.full_name === "string"
         ? profile.full_name
         : data.user.email ?? "User",
-    role: role ?? "CHILD"
+    role
   };
 }
 
