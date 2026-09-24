@@ -1,19 +1,32 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { loginAction, registerAction, resetPasswordAction } from "@/app/actions/auth";
 
 type AuthState = {
   error?: string;
   success?: string;
+  redirectTo?: string;
 };
 
 const formClasses =
   "w-full rounded-xl border border-slate-700 bg-slate-900/70 px-4 py-3 text-sm text-slate-50 placeholder:text-slate-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/40";
 
+function useAuthRedirect(state: AuthState | undefined) {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (state?.redirectTo) {
+      router.push(state.redirectTo);
+    }
+  }, [router, state?.redirectTo]);
+}
+
 export function LoginForm() {
   const [state, formAction, isPending] = useActionState(loginAction, {} as AuthState);
+  useAuthRedirect(state);
 
   return (
     <form action={formAction} className="space-y-4">
@@ -50,6 +63,7 @@ export function LoginForm() {
 
 export function RegisterForm() {
   const [state, formAction, isPending] = useActionState(registerAction, {} as AuthState);
+  useAuthRedirect(state);
 
   return (
     <form action={formAction} className="space-y-4">

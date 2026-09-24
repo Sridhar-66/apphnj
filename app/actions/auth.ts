@@ -8,6 +8,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 export type AuthActionResult = {
   error?: string;
   success?: string;
+  redirectTo?: string;
 };
 
 function hasSupabaseConfig() {
@@ -47,7 +48,7 @@ export async function loginAction(
   }
 
   revalidatePath("/", "layout");
-  redirect(roleToRoute(session.role));
+  return { success: "Signed in successfully.", redirectTo: roleToRoute(session.role) };
 }
 
 export async function registerAction(
@@ -92,10 +93,10 @@ export async function registerAction(
   revalidatePath("/", "layout");
 
   if (data.session) {
-    redirect("/student");
+    return { success: "Account created successfully.", redirectTo: "/student" };
   }
 
-  redirect("/login?registered=1");
+  return { success: "Check your email to confirm your account.", redirectTo: "/login" };
 }
 
 export async function resetPasswordAction(
