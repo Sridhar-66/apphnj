@@ -8,6 +8,8 @@ import { getCourseDetail, getMentorCourseLearners } from "@/lib/course-data";
 import { deleteLessonAction } from "@/app/actions/lessons";
 import { deleteMaterialAction } from "@/app/actions/materials";
 
+export const dynamic = "force-dynamic";
+
 export default async function MentorCourseDetailPage({
   params
 }: {

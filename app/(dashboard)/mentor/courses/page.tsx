@@ -3,6 +3,8 @@ import { CourseForm } from "@/components/course-form";
 import { requireRole } from "@/lib/auth";
 import { getMentorCourseList } from "@/lib/course-data";
 
+export const dynamic = "force-dynamic";
+
 export default async function MentorCoursesPage() {
   const session = await requireRole("MENTOR");
   const courses = await getMentorCourseList(session.id);

@@ -4,6 +4,8 @@ import { requireRole } from "@/lib/auth";
 import { getStudentDashboardData } from "@/lib/dashboard-data";
 import { getStudentCourseList, getStudentCertificates } from "@/lib/course-data";
 
+export const dynamic = "force-dynamic";
+
 export default async function StudentDashboardPage() {
   const session = await requireRole("CHILD");
   const [data, courses, certificates] = await Promise.all([

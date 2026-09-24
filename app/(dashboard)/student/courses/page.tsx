@@ -4,6 +4,8 @@ import { EnrollButton } from "@/components/enroll-button";
 import { requireRole } from "@/lib/auth";
 import { getStudentCourseList } from "@/lib/course-data";
 
+export const dynamic = "force-dynamic";
+
 export default async function StudentCoursesPage() {
   const session = await requireRole("CHILD");
   const courses = await getStudentCourseList(session.id);

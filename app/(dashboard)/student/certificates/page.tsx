@@ -3,6 +3,8 @@ import { DashboardShell } from "@/components/dashboard-shell";
 import { requireRole } from "@/lib/auth";
 import { getStudentCertificates } from "@/lib/course-data";
 
+export const dynamic = "force-dynamic";
+
 export default async function StudentCertificatesPage() {
   const session = await requireRole("CHILD");
   const certificates = await getStudentCertificates(session.id);

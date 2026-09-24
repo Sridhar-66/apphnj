@@ -3,6 +3,8 @@ import { ReferralGenerator } from "@/components/referral-generator";
 import { requireRole } from "@/lib/auth";
 import { getInfluencerDashboardData } from "@/lib/referral-data";
 
+export const dynamic = "force-dynamic";
+
 export default async function InfluencerDashboardPage() {
   const session = await requireRole("INFLUENCER");
   const data = await getInfluencerDashboardData(session.id);

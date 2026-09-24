@@ -2,6 +2,8 @@ import { DashboardShell } from "@/components/dashboard-shell";
 import { getAdminDashboardData } from "@/lib/dashboard-data";
 import { requireRole } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminDashboardPage() {
   const session = await requireRole("ADMIN");
   const data = await getAdminDashboardData();

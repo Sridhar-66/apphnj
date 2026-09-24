@@ -3,6 +3,8 @@ import { DashboardShell } from "@/components/dashboard-shell";
 import { requireRole } from "@/lib/auth";
 import { getMentorDashboardData } from "@/lib/dashboard-data";
 
+export const dynamic = "force-dynamic";
+
 export default async function MentorDashboardPage() {
   const session = await requireRole("MENTOR");
   const data = await getMentorDashboardData(session.id);

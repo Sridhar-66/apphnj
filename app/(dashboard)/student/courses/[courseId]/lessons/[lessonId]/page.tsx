@@ -6,6 +6,8 @@ import { LessonCompleteButton } from "@/components/lesson-complete-button";
 import { requireRole } from "@/lib/auth";
 import { getLessonDetail, getCourseDetail } from "@/lib/course-data";
 
+export const dynamic = "force-dynamic";
+
 export default async function StudentLessonPlayerPage({
   params
 }: {

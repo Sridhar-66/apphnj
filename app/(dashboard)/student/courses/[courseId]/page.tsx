@@ -5,6 +5,8 @@ import { EnrollButton } from "@/components/enroll-button";
 import { requireRole } from "@/lib/auth";
 import { getCourseDetail } from "@/lib/course-data";
 
+export const dynamic = "force-dynamic";
+
 export default async function StudentCourseDetailPage({
   params
 }: {

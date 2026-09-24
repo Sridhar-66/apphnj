@@ -4,6 +4,8 @@ import { requireRole } from "@/lib/auth";
 import { getMentorDashboardData } from "@/lib/dashboard-data";
 import { getMentorCourseList } from "@/lib/course-data";
 
+export const dynamic = "force-dynamic";
+
 export default async function MentorAnalyticsPage() {
   const session = await requireRole("MENTOR");
   const [data, courses] = await Promise.all([

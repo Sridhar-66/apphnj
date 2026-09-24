@@ -3,6 +3,8 @@ import { DashboardShell } from "@/components/dashboard-shell";
 import { requireRole } from "@/lib/auth";
 import { getAdminCourseList } from "@/lib/course-data";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminCoursesPage() {
   const session = await requireRole("ADMIN");
   const courses = await getAdminCourseList();
