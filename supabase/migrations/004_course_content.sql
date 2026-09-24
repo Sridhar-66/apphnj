@@ -440,18 +440,22 @@ with check (
   and referral_code is not null
 );
 
-create trigger if not exists courses_updated_at
+drop trigger if exists courses_updated_at on public.courses;
+create trigger courses_updated_at
 before update on public.courses
 for each row execute procedure public.update_updated_at();
 
-create trigger if not exists lesson_progress_updated_at
+drop trigger if exists lesson_progress_updated_at on public.lesson_progress;
+create trigger lesson_progress_updated_at
 before update on public.lesson_progress
 for each row execute procedure public.update_updated_at();
 
-create trigger if not exists course_progress_updated_at
+drop trigger if exists course_progress_updated_at on public.course_progress;
+create trigger course_progress_updated_at
 before update on public.course_progress
 for each row execute procedure public.update_updated_at();
 
-create trigger if not exists referrals_updated_at
+drop trigger if exists referrals_updated_at on public.referrals;
+create trigger referrals_updated_at
 before update on public.referrals
 for each row execute procedure public.update_updated_at();
