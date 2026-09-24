@@ -16,7 +16,7 @@ function isProtectedPath(pathname: string) {
   return Object.keys(APP_ROLES).some((route) => pathname === route || pathname.startsWith(`${route}/`));
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const response = NextResponse.next();
   const pathname = request.nextUrl.pathname;
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
