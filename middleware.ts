@@ -47,8 +47,14 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  const { data, error } = await supabase.auth.getUser();
-  const user = data?.user;
+  let user = null;
+
+  try {
+    const { data, error } = await supabase.auth.getUser();
+    user = error ? null : data?.user ?? null;
+  } catch {
+    user = null;
+  }
 
   if (!user && isProtectedPath(pathname)) {
     const redirectUrl = request.nextUrl.clone();
@@ -58,15 +64,24 @@ export async function middleware(request: NextRequest) {
   }
 
   if (user && AUTH_ROUTES.has(pathname)) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .maybeSingle();
-    const role = normalizeRole(profile?.role);
+    let role: ReturnType<typeof normalizeRole> = null;
+
+    try {
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (!profileError && profile) {
+        role = normalizeRole(profile.role);
+      }
+    } catch {
+      role = null;
+    }
 
     if (!role) {
-      await supabase.auth.signOut();
+      await supabase.auth.signOut().catch(() => undefined);
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = "/login";
       redirectUrl.search = "error=profile";
@@ -79,15 +94,24 @@ export async function middleware(request: NextRequest) {
   }
 
   if (user && isProtectedPath(pathname)) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .maybeSingle();
-    const preferredRole = normalizeRole(profile?.role);
+    let preferredRole: ReturnType<typeof normalizeRole> = null;
+
+    try {
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (!profileError && profile) {
+        preferredRole = normalizeRole(profile.role);
+      }
+    } catch {
+      preferredRole = null;
+    }
 
     if (!preferredRole) {
-      await supabase.auth.signOut();
+      await supabase.auth.signOut().catch(() => undefined);
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = "/login";
       redirectUrl.search = "error=profile";

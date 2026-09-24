@@ -50,34 +50,42 @@ export async function getSessionUser(): Promise<SessionUser | null> {
     return null;
   }
 
-  const supabase = await createServerSupabaseClient();
-  const { data, error } = await supabase.auth.getUser();
+  try {
+    const supabase = await createServerSupabaseClient();
+    const { data, error } = await supabase.auth.getUser();
 
-  if (error || !data?.user) {
+    if (error || !data?.user) {
+      return null;
+    }
+
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("full_name, role")
+      .eq("id", data.user.id)
+      .maybeSingle();
+
+    if (profileError || !profile) {
+      return null;
+    }
+
+    const role = normalizeRole(profile.role);
+
+    if (!role) {
+      return null;
+    }
+
+    return {
+      id: data.user.id,
+      email: data.user.email ?? "",
+      full_name:
+        typeof profile.full_name === "string"
+          ? profile.full_name
+          : data.user.email ?? "User",
+      role
+    };
+  } catch {
     return null;
   }
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("full_name, role")
-    .eq("id", data.user.id)
-    .maybeSingle();
-
-  const role = normalizeRole(profile?.role);
-
-  if (!role) {
-    return null;
-  }
-
-  return {
-    id: data.user.id,
-    email: data.user.email ?? "",
-    full_name:
-      typeof profile?.full_name === "string"
-        ? profile.full_name
-        : data.user.email ?? "User",
-    role
-  };
 }
 
 export async function requireRole(role: AppRole): Promise<SessionUser> {
