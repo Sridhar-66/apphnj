@@ -27,10 +27,16 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Added course browsing pages for students and management pages for mentors/admins, plus a mentor course-creation form.
 - Verified with `npm run typecheck`, `npm run lint`, `npm run build`, and `git diff --check`.
 
-### Stage 3 — Learning workflows and referral tracking (next)
+### Stage 3 — Learning workflows and referral tracking (complete)
 
-- Add student enrollment and lesson-progress actions, certificate issuance flows, and influencer referral tracking in the UI.
-- Expand mentor controls for lesson/material uploads and learner analytics reporting.
+- Added Supabase migration 005 for progress and referral update policies.
+- Student learning workflows: course enrollment action (`enrollCourseAction`), interactive course overview, lesson player with YouTube embeds, downloadable resources/materials, lesson completion tracking, and automatic certificate issuance upon 100% course progress.
+- Student credentials: certificate viewer and verification codes at `/student/certificates`.
+- Mentor content controls: lesson creation (`createLessonAction`), material attachment (`createMaterialAction`), lesson/material deletion, and learner roster/progress tracking at `/mentor/courses/[courseId]`.
+- Mentor analytics: course performance reporting, learner engagement, and completion breakdowns at `/mentor/analytics`.
+- Influencer referral tracking: live referral KPI metrics, custom campaign code generation (`createReferralAction`), copyable referral links (`/register?ref=CODE`), and conversion tracking table at `/influencer`.
+- Registration referral attribution: student registration automatically records and credits referral conversions.
+- Verified with `npm run typecheck`, `npm run lint`, `npm run build`, and `git diff --check`.
 
 ### Operating rules
 

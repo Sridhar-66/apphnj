@@ -17,7 +17,13 @@ export default [
       globals: {
         process: "readonly",
         FormData: "readonly",
-        FormDataEntryValue: "readonly"
+        FormDataEntryValue: "readonly",
+        HTMLFormElement: "readonly",
+        setTimeout: "readonly",
+        clearTimeout: "readonly",
+        navigator: "readonly",
+        window: "readonly",
+        document: "readonly"
       },
       parserOptions: {
         ecmaFeatures: {

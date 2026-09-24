@@ -88,6 +88,19 @@ export function RegisterForm() {
         <input id="register-password" name="password" type="password" minLength={6} required className={formClasses} placeholder="At least 6 characters" />
       </div>
 
+      <div>
+        <label htmlFor="register-ref" className="mb-2 block text-sm font-medium text-slate-200">
+          Referral Code <span className="text-xs text-slate-400 font-normal">(Optional)</span>
+        </label>
+        <input
+          id="register-ref"
+          name="ref_code"
+          type="text"
+          className={formClasses}
+          placeholder="e.g. REF-PROMO-123"
+        />
+      </div>
+
       {state?.error ? <p className="text-sm text-rose-400">{state.error}</p> : null}
       {state?.success ? <p className="text-sm text-emerald-400">{state.success}</p> : null}
 

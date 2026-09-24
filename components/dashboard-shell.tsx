@@ -11,11 +11,13 @@ const navigationMap: Record<AppRole, { label: string; href: string }[]> = {
   ],
   MENTOR: [
     { label: "Overview", href: "/mentor" },
-    { label: "Courses", href: "/mentor/courses" }
+    { label: "Courses", href: "/mentor/courses" },
+    { label: "Analytics", href: "/mentor/analytics" }
   ],
   CHILD: [
     { label: "Overview", href: "/student" },
-    { label: "Courses", href: "/student/courses" }
+    { label: "Courses", href: "/student/courses" },
+    { label: "Certificates", href: "/student/certificates" }
   ],
   INFLUENCER: [
     { label: "Overview", href: "/influencer" }

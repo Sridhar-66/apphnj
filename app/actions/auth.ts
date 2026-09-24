@@ -58,6 +58,7 @@ export async function registerAction(
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const fullName = String(formData.get("full_name") ?? "").trim();
+  const refCode = String(formData.get("ref_code") ?? "").trim().toUpperCase();
 
   if (!email || !email.includes("@")) {
     return { error: "Please enter a valid email address." };
@@ -88,6 +89,30 @@ export async function registerAction(
 
   if (error) {
     return { error: error.message };
+  }
+
+  // If referral code provided, record attribution
+  if (refCode && data.user) {
+    try {
+      const { data: referralRecord } = await supabase
+        .from("referrals")
+        .select("id, influencer_id")
+        .eq("referral_code", refCode)
+        .limit(1)
+        .maybeSingle();
+
+      if (referralRecord) {
+        await supabase.from("referrals").insert({
+          influencer_id: referralRecord.influencer_id,
+          student_id: data.user.id,
+          referral_code: refCode,
+          status: "converted",
+          amount_cents: 1000 // $10 commission
+        });
+      }
+    } catch {
+      // Non-blocking referral tracking
+    }
   }
 
   revalidatePath("/", "layout");

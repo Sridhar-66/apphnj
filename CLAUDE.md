@@ -20,10 +20,16 @@
 - Added student course browse pages, mentor management pages, and a mentor course-creation form backed by server actions.
 - Verified with `npm run typecheck`, `npm run lint`, `npm run build`, and `git diff --check`.
 
-### Stage 3 — Learning workflows and referral tracking (next)
+### Stage 3 — Learning workflows and referral tracking (complete)
 
-- Add student enrollment and lesson-progress actions, certificate issuance flows, and influencer referral tracking in the UI.
-- Expand mentor controls for lesson/material uploads and learner analytics reporting.
+- Applied migration 005 for progress and referral update policies.
+- Implemented student learning workflows: course enrollment action (`enrollCourseAction`), interactive course overview, lesson player with YouTube embeds, lesson materials downloads, progress tracking, and automatic certificate issuance upon 100% course completion.
+- Added student certificates gallery and credential verification at `/student/certificates`.
+- Expanded mentor features: lesson creation (`createLessonAction`), material attachments (`createMaterialAction`), and student roster/progress tracking at `/mentor/courses/[courseId]`.
+- Added mentor analytics reporting at `/mentor/analytics`.
+- Implemented influencer referral tracking, custom campaign code generation, copyable referral links, and conversion logging at `/influencer`.
+- Added referral attribution during student account registration.
+- Verified with `npm run typecheck`, `npm run lint`, `npm run build`, and `git diff --check`.
 
 ### Working pattern
 

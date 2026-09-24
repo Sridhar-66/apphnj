@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DashboardShell } from "@/components/dashboard-shell";
+import { EnrollButton } from "@/components/enroll-button";
 import { requireRole } from "@/lib/auth";
 import { getStudentCourseList } from "@/lib/course-data";
 
@@ -49,9 +50,7 @@ export default async function StudentCoursesPage() {
                       <div className="h-full rounded-full bg-cyan-400" style={{ width: `${course.progress_percent}%` }} />
                     </div>
                   </div>
-                  <button type="button" className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 hover:border-cyan-500/60">
-                    {course.enrolled ? "Continue" : "Enroll"}
-                  </button>
+                  <EnrollButton courseId={course.id} isEnrolled={course.enrolled} />
                 </div>
               </article>
             ))}

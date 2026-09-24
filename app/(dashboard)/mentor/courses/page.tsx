@@ -25,10 +25,17 @@ export default async function MentorCoursesPage() {
                   </div>
                   <span className="rounded-full border border-slate-700 px-2 py-1 text-xs text-slate-300">{course.lesson_count} lessons</span>
                 </div>
-                <p className="mt-3 text-sm text-slate-300">{course.description || "No description provided yet."}</p>
-                <div className="mt-3 flex flex-wrap gap-3 text-xs text-slate-400">
-                  <span>{course.enrollment_count} enrollments</span>
-                  <span>{course.slug}</span>
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-3 pt-2">
+                  <div className="flex flex-wrap gap-3 text-xs text-slate-400">
+                    <span>{course.enrollment_count} enrollments</span>
+                    <span>{course.slug}</span>
+                  </div>
+                  <a
+                    href={`/mentor/courses/${course.id}`}
+                    className="rounded-xl border border-cyan-500/40 bg-cyan-950/40 px-3 py-1.5 text-xs font-semibold text-cyan-300 transition hover:bg-cyan-900/40 hover:border-cyan-400"
+                  >
+                    Manage Curriculum & Learners →
+                  </a>
                 </div>
               </div>
             ))}
