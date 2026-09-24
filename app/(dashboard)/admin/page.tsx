@@ -12,7 +12,8 @@ export default async function AdminDashboardPage() {
         {[
           ["Students", data.students],
           ["Mentors", data.mentors],
-          ["Influencers", data.influencers]
+          ["Influencers", data.influencers],
+          ["Courses", data.courses]
         ].map(([label, value]) => (
           <div key={label} className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
             <p className="text-sm text-slate-400">{label}</p>
@@ -20,8 +21,16 @@ export default async function AdminDashboardPage() {
           </div>
         ))}
         <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
-          <p className="text-sm text-slate-400">Courses</p>
-          <p className="mt-4 text-lg font-semibold text-slate-300">Not available yet</p>
+          <p className="text-sm text-slate-400">Published courses</p>
+          <p className="mt-4 text-3xl font-bold text-white">{data.publishedCourses}</p>
+        </div>
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
+          <p className="text-sm text-slate-400">Enrollments</p>
+          <p className="mt-4 text-3xl font-bold text-white">{data.enrollments}</p>
+        </div>
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
+          <p className="text-sm text-slate-400">Certificates</p>
+          <p className="mt-4 text-3xl font-bold text-white">{data.certificates}</p>
         </div>
       </div>
 
@@ -42,7 +51,7 @@ export default async function AdminDashboardPage() {
 
         <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
           <h3 className="text-lg font-semibold text-white">Platform health</h3>
-          <p className="mt-4 text-sm text-slate-400">Analytics will appear after course, progress, and referral records are added.</p>
+          <p className="mt-4 text-sm text-slate-400">Live analytics are now generated from course, enrollment, progress, and certificate records in Supabase.</p>
         </div>
       </div>
     </DashboardShell>

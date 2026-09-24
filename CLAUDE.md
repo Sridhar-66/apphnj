@@ -13,10 +13,17 @@
 - Deployment: the repository is connected to Vercel and live in production. Vercel environment variables must include `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_APP_URL`, and server-only `SUPABASE_SERVICE_ROLE_KEY`.
 - Verified with `npm run typecheck`, `npm run lint`, `npm run build`, linked Supabase migration status, and a source scan for removed demo data.
 
-### Stage 2 — Course content system (next)
+### Stage 2 — Course content system (complete)
 
-- Add course, module, lesson, materials, enrollment, progress, certificate, referral, and analytics tables with RLS.
-- Replace current domain-data empty states with database-backed UI workflows.
+- Added Supabase migration 004 for courses, modules, lessons, materials, enrollments, progress, certificates, and referral records with RLS and indexes.
+- Replaced remaining empty dashboard states with real database-backed metrics for students, mentors, and admins.
+- Added student course browse pages, mentor management pages, and a mentor course-creation form backed by server actions.
+- Verified with `npm run typecheck`, `npm run lint`, `npm run build`, and `git diff --check`.
+
+### Stage 3 — Learning workflows and referral tracking (next)
+
+- Add student enrollment and lesson-progress actions, certificate issuance flows, and influencer referral tracking in the UI.
+- Expand mentor controls for lesson/material uploads and learner analytics reporting.
 
 ### Working pattern
 

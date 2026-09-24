@@ -20,6 +20,18 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Password recovery: reset-link completion is implemented at `/reset-password`.
 - Required next step: Stage 2 course content system with course, module, lesson, materials, and YouTube recording support.
 
+### Stage 2 — Course content system (complete)
+
+- Added Supabase migration 004 for courses, modules, lessons, materials, enrollments, progress, certificates, and referral records with RLS and indexes.
+- Replaced empty dashboard metrics with real database-backed values for students, mentors, and admins.
+- Added course browsing pages for students and management pages for mentors/admins, plus a mentor course-creation form.
+- Verified with `npm run typecheck`, `npm run lint`, `npm run build`, and `git diff --check`.
+
+### Stage 3 — Learning workflows and referral tracking (next)
+
+- Add student enrollment and lesson-progress actions, certificate issuance flows, and influencer referral tracking in the UI.
+- Expand mentor controls for lesson/material uploads and learner analytics reporting.
+
 ### Operating rules
 
 - Use the main agent to orchestrate the work and break tasks into focused subagent-driven implementation passes.

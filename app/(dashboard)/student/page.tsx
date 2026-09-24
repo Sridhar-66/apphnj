@@ -1,17 +1,20 @@
+import Link from "next/link";
 import { DashboardShell } from "@/components/dashboard-shell";
 import { requireRole } from "@/lib/auth";
+import { getStudentDashboardData } from "@/lib/dashboard-data";
 
 export default async function StudentDashboardPage() {
   const session = await requireRole("CHILD");
+  const data = await getStudentDashboardData(session.id);
 
   return (
     <DashboardShell role="CHILD" title="Student dashboard" subtitle={`Signed in as ${session.full_name}.`}>
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {[
-          ["Enrolled courses", "No data yet"],
-          ["Lessons completed", "No data yet"],
-          ["Completion", "No data yet"],
-          ["Certificates", "No data yet"]
+          ["Enrolled courses", data.enrolledCourses],
+          ["Lessons completed", data.completedLessons],
+          ["Completion", `${data.completion}%`],
+          ["Certificates", data.certificates]
         ].map(([label, value]) => (
           <div key={label} className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
             <p className="text-sm text-slate-400">{label}</p>
@@ -21,8 +24,11 @@ export default async function StudentDashboardPage() {
       </div>
 
       <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
-        <h3 className="text-lg font-semibold text-white">Continue learning</h3>
-        <p className="mt-4 text-sm text-slate-400">Enrollments and lessons will appear here when content is available.</p>
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="text-lg font-semibold text-white">Continue learning</h3>
+          <Link href="/student/courses" className="text-sm text-cyan-300 hover:text-cyan-200">Browse courses</Link>
+        </div>
+        <p className="mt-4 text-sm text-slate-400">Your course progress will appear here as soon as you enroll in a published learning path.</p>
       </div>
     </DashboardShell>
   );
